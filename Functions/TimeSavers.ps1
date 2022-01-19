@@ -63,14 +63,23 @@ function getChangesInBranch{
         [Parameter(Mandatory=$true)]
         [String]$gitLoc,
         [Parameter(Mandatory=$true)]
-        [String]$branchName
+        [String]$branchName,
+        [Parameter(Mandatory=$false)]
+        [String]$update
     )
 
     Set-Location $gitLoc
+
+    if ($update -eq "y"){
+        git pull
+    }
     $lastCommitHash = git log -n 1 $branchName --pretty=format:"%H"
 
-    Write-Host "`nFetching all commits since $lastCommitHash. Ensure you press enter to view all commits until you see (END) then press q.`n" -ForegroundColor Green
+    #must be using Git version 2.2 or above for this to work.
+    $branch = git branch --show-current 
 
+    Write-Host "`n Warning you are currently on $branch branch." -ForegroundColor Yellow
+    Write-Host "`nFetching all commits since $lastCommitHash. Ensure you press enter to view all commits until you see (END) then press q.`n" -ForegroundColor Green
     git log $lastCommitHash..Head --oneline --merges|Where-Object {$_ -Like "*Merged in Jira*"} | Format-Table
 
     Write-Host "`nScript Completed." -ForegroundColor Green
