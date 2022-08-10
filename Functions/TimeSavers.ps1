@@ -1,5 +1,5 @@
 $codingLoc = "C:\Coding";
-$psProfileLoc = "C:\Users\Claire\Documents\WindowsPowerShell";
+$psProfileLoc = "C:\Users\Daniel\Documents\WindowsPowerShell";
 function goToGitHubRepo($loc)
 {
     Write-Host "Heading to GitHub repo for" $loc;
@@ -37,14 +37,14 @@ function psProfile()
 
 function copyPSProfileToCode(){
     Write-Host "Copying from" $psProfileLoc;
-    Copy-Item -Path "C:\Users\Claire\Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1" -Destination "C:\Coding\PowerShellProfile" -Recurse;
-    Copy-Item -Path "C:\Users\Claire\Documents\WindowsPowerShell\Functions" -Destination "C:\Coding\PowerShellProfile\Functions" -Recurse;
+    Copy-Item -Path "$psProfileLoc\Microsoft.PowerShell_profile.ps1" -Destination "C:\Coding\PowerShellProfile" -Recurse;
+    Copy-Item -Path "$psProfileLoc\Functions" -Destination "C:\Coding\PowerShellProfile\Functions" -Recurse;
 }
 
 function copyPSProfileFromCode(){
     Write-Host "Copying from" $psProfileLoc;
-    Copy-Item -Path "C:\Users\Claire\Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1" -Destination "C:\Coding\PowerShellProfile" -Recurse;
-    Copy-Item -Path "C:\Users\Claire\Documents\WindowsPowerShell\Functions" -Destination "C:\Coding\PowerShellProfile\Functions" -Recurse;
+    Copy-Item -Path "$psProfileLoc\Microsoft.PowerShell_profile.ps1" -Destination "C:\Coding\PowerShellProfile" -Recurse;
+    Copy-Item -Path "$psProfileLoc\Functions" -Destination "C:\Coding\PowerShellProfile\Functions" -Recurse;
 }
 
 <#
