@@ -1,7 +1,11 @@
 Clear-Host
 
+Import-Module posh-git
+
+oh-my-posh init pwsh --config "$env:POSH_THEMES_PATH\stelbent-compact.minimal.omp.json" | invoke-expression
+
+
 $Host.UI.RawUI.BackgroundColor = "black";
-$host.UI.RawUI.ForegroundColor = "cyan";
 $host.ui.RawUI.WindowTitle = "Powershell Admin"
 
 Write-host "The current profile in use is located at" $profile;
