@@ -12,4 +12,5 @@ function installTerminalconfig
     $host.ui.RawUI.font = "MesloLGM NF"
 
     oh-my-posh init pwsh --config "$env:POSH_THEMES_PATH\stelbent-compact.minimal.omp.json" | invoke-expression
+    Write-Host "Close and reopen the terminal for changes to apply."
 }
