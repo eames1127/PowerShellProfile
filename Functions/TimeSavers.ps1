@@ -1,6 +1,6 @@
-# Configuration variables
+# Configuration variables - Update these paths for your environment
 $codingLoc = "C:\Coding"
-$username = "user"
+$username = $env:USERNAME
 $psProfileLoc = "C:\Users\$username\Documents\WindowsPowerShell"
 
 # Opens GitHub repository in default browser
