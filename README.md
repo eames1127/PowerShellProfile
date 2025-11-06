@@ -36,7 +36,3 @@
 - Windows PowerShell 5.1+ or PowerShell 7+
 - Administrator privileges (for some system functions)
 - Optional: [Oh My Posh](https://ohmyposh.dev/) for enhanced terminal theming
-
-## 🤝 Contributing
-
-Feel free to fork, modify, and submit pull requests to improve these utilities for the community!
