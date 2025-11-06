@@ -19,6 +19,7 @@
 - **Functions/Config.ps1** - Terminal setup and configuration utilities  
 - **Functions/FileUtils.ps1** - File system operations and utilities
 - **Functions/SystemUtils.ps1** - System administration and monitoring tools
+- **Functions/NetworkUtils.ps1** - Network diagnostics and connectivity tools
 
 ## ✨ Key Features
 
@@ -30,6 +31,9 @@
 - 📦 File compression and archiving utilities
 - 📊 Event log monitoring and reporting
 - 🛠️ Windows service management tools
+- 🌐 Network speed testing and IP information
+- 🔍 Port usage checking and network diagnostics
+- 📡 WiFi network management and connectivity tools
 
 ## 🔧 Requirements
 
