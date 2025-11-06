@@ -1,10 +1,11 @@
 $codingLoc = "C:\Coding";
-$psProfileLoc = "C:\Users\Daniel\Documents\WindowsPowerShell";
-function goToGitHubRepo($loc)
+$username = "user";
+$psProfileLoc = "C:\Users\$username\Documents\WindowsPowerShell";
+function goToGitHubRepo($username, $loc)
 {
     Write-Host "Heading to GitHub repo for" $loc;
-    $url = "https://github.com/eames1127/"+ $loc;
-    Start-Process "chrome.exe" $url;
+    $url = "https://github.com/" + $username + "/" + $loc;
+    Start-Process $url;
 }
 
 function goToCoding()
