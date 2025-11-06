@@ -8,6 +8,7 @@ Custom PowerShell profile with productivity functions and terminal configuration
 - **Functions/TimeSavers.ps1** - Development workflow shortcuts (GitHub, coding directories, git operations)
 - **Functions/Config.ps1** - Terminal setup and configuration utilities
 - **Functions/FileUtils.ps1** - File system operations and utilities
+- **Functions/SystemUtils.ps1** - System administration and monitoring tools
 
 ## Key Features
 
@@ -17,3 +18,4 @@ Custom PowerShell profile with productivity functions and terminal configuration
 - PowerShell profile backup/sync functions
 - Git branch comparison tools
 - File compression and archiving utilities
+- Event log monitoring and reporting
