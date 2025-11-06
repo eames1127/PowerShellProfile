@@ -1,9 +1,9 @@
 # Check Event Viewer logs on multiple servers and export to PDF
-# Parameters: $servers (array of server names), $days (days back to check)
+# Parameters: $servers (array of server names - replace placeholders with actual server names), $days (days back to check)
 function checkEventLogs {
     param(
         [Parameter(Mandatory=$false)]
-        [String[]]$servers = @("server1", "server2"),
+        [String[]]$servers = @("<server1>", "<server2>"),
         [Parameter(Mandatory=$false)]
         [int]$days = 10
     )
