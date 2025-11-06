@@ -16,3 +16,39 @@ function compressAndCopy {
     Get-ChildItem -Path $loc | Compress-Archive -DestinationPath $archive -CompressionLevel Optimal -Verbose -Confirm
     Write-Host "Finished copying files to $archive"
 }
+
+# Validate that all required files exist in a directory - useful for deployment verification,
+# backup validation, or ensuring project dependencies are present
+# Parameters: $path (directory to check), $fileList (array of filenames to verify)
+# Returns: $true if all files found, $false if any missing
+function validateFiles {
+    param(
+        [Parameter(Mandatory=$true)]
+        [String]$path,
+        [Parameter(Mandatory=$false)]
+        [String[]]$fileList = @("text.txt", "document.doc")
+    )
+
+    $missingFiles = @()
+    
+    Write-Host "Checking for required files in: $path"
+    Write-Host "Files to verify: $($fileList -join ', ')"
+    
+    foreach ($file in $fileList) {
+        $fullPath = Join-Path $path $file
+        if (-not (Test-Path -LiteralPath $fullPath)) {
+            $missingFiles += $file
+        }
+    }
+    
+    if ($missingFiles.Count -gt 0) {
+        Write-Host "FAIL: Missing files in $path" -ForegroundColor Red
+        foreach ($file in $missingFiles) {
+            Write-Host "  - $file" -ForegroundColor Red
+        }
+        return $false
+    } else {
+        Write-Host "SUCCESS: All files found" -ForegroundColor Green
+        return $true
+    }
+}
