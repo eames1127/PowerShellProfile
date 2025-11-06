@@ -31,3 +31,66 @@ function checkEventLogs {
         Write-Host "No selection made"
     }
 }
+
+# Restart Windows services locally or remotely with predefined service IDs
+# Parameters: $serviceID (1=Spooler, 2=Custom, 88=Manual input, 0/default=List services), $machine (remote computer name, empty for local)
+# Usage examples:
+#   manageServices                           # List running services locally
+#   manageServices -serviceID 1              # Restart Spooler service locally
+#   manageServices -serviceID 88             # Manually enter service name to restart locally
+#   manageServices -serviceID 1 -machine "SERVER01"  # Restart Spooler on remote server
+function manageServices {
+    param(
+        [Parameter(Mandatory=$false)]
+        [int]$serviceID = 0,
+        [Parameter(Mandatory=$false)]
+        [string]$machine = ""
+    )
+
+    if ($machine -eq "") {
+        Write-Host "Running locally..." -ForegroundColor Green
+        switch ($serviceID) {
+            1 {
+                Write-Host "Restarting Spooler service..."
+                Restart-Service -Name "Spooler" -Force
+            }
+            2 {
+                Write-Host "Service ID 2 not configured" -ForegroundColor Yellow
+            }
+            88 {
+                $serviceName = Read-Host "Enter service name to restart"
+                Restart-Service -Name $serviceName -Force
+            }
+            Default {
+                Write-Host "Showing all running services..."
+                Get-Service | Where-Object Status -eq "Running" | Format-Table
+            }
+        }
+    } else {
+        Write-Host "Running against $machine..." -ForegroundColor Yellow
+        $continue = Read-Host "Continue? (y/n)"
+        
+        if ($continue.ToLower() -eq 'y') {
+            switch ($serviceID) {
+                1 {
+                    Write-Host "Restarting Spooler service on $machine..."
+                    Get-Service -ComputerName $machine -Name "Spooler" | Restart-Service -Verbose
+                }
+                2 {
+                    Write-Host "Service ID 2 not configured" -ForegroundColor Yellow
+                }
+                88 {
+                    $serviceName = Read-Host "Enter service name to restart"
+                    Get-Service -ComputerName $machine -Name $serviceName | Restart-Service -Verbose
+                }
+                Default {
+                    Write-Host "Showing all running services on $machine..."
+                    Get-Service -ComputerName $machine | Where-Object Status -eq "Running" | Format-Table
+                }
+            }
+        } else {
+            Write-Host "Aborted" -ForegroundColor Yellow
+        }
+    }
+    Write-Host "Operation completed" -ForegroundColor Green
+}
