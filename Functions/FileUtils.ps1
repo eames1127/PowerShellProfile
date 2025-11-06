@@ -52,3 +52,33 @@ function validateFiles {
         return $true
     }
 }
+
+# Copy files by extension filter with confirmation
+# Parameters: $copyFrom (source path, defaults to current location), $copyTo (destination path), $extFilter (file extensions to copy)
+function copyByExtension {
+    param(
+        [Parameter(Mandatory=$false)]
+        [string]$copyFrom = (Get-Location),
+        [Parameter(Mandatory=$true)]
+        [string]$copyTo,
+        [Parameter(Mandatory=$false)]
+        [string[]]$extFilter = @("*.ps1", "*.md", "*.docx")
+    )
+
+    Write-Host "Copy from: $copyFrom" -ForegroundColor DarkYellow
+    Write-Host "Copy to: $copyTo" -ForegroundColor DarkYellow
+    Write-Host "Extensions: $($extFilter -join ', ')" -ForegroundColor DarkYellow
+
+    $continue = Read-Host "Continue? (y/n)"
+    if ($continue.ToLower() -ne 'y') {
+        Write-Host "Aborted" -ForegroundColor Red
+        return
+    }
+
+    Get-ChildItem -Path "$copyFrom\*" -Recurse -Include $extFilter | ForEach-Object {
+        Write-Host "Copying $($_.Name) to $copyTo"
+        Copy-Item $_ -Destination $copyTo -Confirm
+    }
+    
+    Write-Host "Finished copying files to $copyTo" -ForegroundColor Green
+}
