@@ -7,6 +7,7 @@ Custom PowerShell profile with productivity functions and terminal configuration
 - **Microsoft.PowerShell_profile.ps1** - Main profile that loads oh-my-posh theme and imports all functions
 - **Functions/TimeSavers.ps1** - Development workflow shortcuts (GitHub, coding directories, git operations)
 - **Functions/Config.ps1** - Terminal setup and configuration utilities
+- **Functions/FileUtils.ps1** - File system operations and utilities
 
 ## Key Features
 
@@ -15,3 +16,4 @@ Custom PowerShell profile with productivity functions and terminal configuration
 - Quick navigation to coding projects and repositories
 - PowerShell profile backup/sync functions
 - Git branch comparison tools
+- File compression and archiving utilities
