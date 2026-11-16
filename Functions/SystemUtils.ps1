@@ -206,11 +206,13 @@ function updateAll {
     if (-not $skipModules) {
         Write-Host "`nUpdating PowerShell modules..." -ForegroundColor Yellow
         Get-InstalledModule -ErrorAction SilentlyContinue | ForEach-Object {
+            # Inside catch, $_ becomes the error record, so keep the module name separately
+            $moduleName = $_.Name
             try {
-                Update-Module -Name $_.Name -ErrorAction Stop
-                Write-Host "  $($_.Name) checked" -ForegroundColor Green
+                Update-Module -Name $moduleName -ErrorAction Stop
+                Write-Host "  $moduleName checked" -ForegroundColor Green
             } catch {
-                Write-Host "  $($_.Name) failed: $($_.Exception.Message)" -ForegroundColor Red
+                Write-Host "  $moduleName failed: $($_.Exception.Message)" -ForegroundColor Red
             }
         }
     }
