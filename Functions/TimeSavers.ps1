@@ -1,11 +1,19 @@
-# Configuration variables - Update these paths for your environment
-$codingLoc = "C:\Coding"
-$username = $env:USERNAME
-$psProfileLoc = "C:\Users\$username\Documents\WindowsPowerShell"
+# Configuration - set these in profile.config.psd1 rather than editing this file
+$codingLoc = if ($profileConfig.CodingPath) { $profileConfig.CodingPath } else { "C:\Coding" }
+# Works for both Windows PowerShell 5.1 and PowerShell 7 profile folders
+$psProfileLoc = Split-Path -Parent $PROFILE
 
 # Opens GitHub repository in default browser
-# Parameters: $username (GitHub username), $loc (repository name)
+# Usage: goToGitHubRepo <username> <repo>, or goToGitHubRepo <repo> to use GitHubUser from profile.config.psd1
 function goToGitHubRepo($username, $loc) {
+    if (-not $loc) {
+        $loc = $username
+        $username = $profileConfig.GitHubUser
+    }
+    if (-not $username) {
+        Write-Host "No GitHub username given - pass one or set GitHubUser in profile.config.psd1" -ForegroundColor Red
+        return
+    }
     Write-Host "Heading to GitHub repo for $loc"
     $url = "https://github.com/$username/$loc"
     Start-Process $url

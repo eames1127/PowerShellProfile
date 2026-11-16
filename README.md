@@ -1,20 +1,33 @@
 # PowerShell Profile Collection
 
+[![CI](https://github.com/eames1127/PowerShellProfile/actions/workflows/ci.yml/badge.svg)](https://github.com/eames1127/PowerShellProfile/actions/workflows/ci.yml)
+[![Licence: MIT](https://img.shields.io/badge/Licence-MIT-blue.svg)](LICENSE)
+
 🚀 **Community PowerShell profile** with productivity functions and terminal configuration for Windows developers and system administrators.
 
 ## 📥 Quick Start
 
-1. **Download** this repository to your local machine
-2. **Copy** `Microsoft.PowerShell_profile.ps1` to your PowerShell profile location:
-   ```powershell
-   $PROFILE
-   ```
-3. **Copy** the `Functions` folder to the same directory
-4. **Restart** PowerShell to load all functions
+**One-line install** (backs up your existing profile first):
+
+```powershell
+irm https://raw.githubusercontent.com/eames1127/PowerShellProfile/master/install.ps1 | iex
+```
+
+Or from a clone, also installing posh-git, oh-my-posh and the Meslo font:
+
+```powershell
+git clone https://github.com/eames1127/PowerShellProfile.git
+cd PowerShellProfile
+.\install.ps1 -InstallTerminal
+```
+
+Then edit `profile.config.psd1` (next to your `$PROFILE`) and open a new terminal.
 
 ## 📁 What's Included
 
 - **Microsoft.PowerShell_profile.ps1** - Main profile that loads oh-my-posh theme and imports all functions
+- **profile.config.example.psd1** - Template for your personal settings
+- **install.ps1** - Installer with automatic backup
 - **Functions/TimeSavers.ps1** - Development workflow shortcuts (GitHub, coding directories, git operations)
 - **Functions/Config.ps1** - Terminal setup and configuration utilities  
 - **Functions/FileUtils.ps1** - File system operations and utilities
@@ -44,13 +57,14 @@
 ## 📚 Function Reference
 
 ### TimeSavers Functions
+- `goToGitHubRepo [$username] $repo` - Open a repo on GitHub (username defaults to `GitHubUser` in config)
 - `goToCoding()` - Navigate to coding directory and open VS Code
 - `goToRepo($repo)` - Navigate to specific repository and show git status
 - `initRepo($url)` - Clone repository to coding directory
 - `psProfile()` - Open PowerShell profile directory in VS Code
 - `copyPSProfileToCode()` - Backup profile to code repository
-- `copyPSProfileFromCode()` - Restore profile from code repository
-- `getChangesInBranch -gitLoc $path -branchName $branch` - Compare branch changes
+- `Update-Profile` (alias `copyPSProfileFromCode`) - Restore profile from code repository, keeping your config
+- `getChangesInBranch -gitLoc $path -branchName $branch [-filter "*Jira*"] [-update]` - Compare branch merges
 
 ### FileUtils Functions
 - `compressAndCopy -fileName $name -loc $source -dest $destination` - Create dated archive
@@ -104,10 +118,15 @@
 
 ### Personal Configuration
 
-1. **Update paths in TimeSavers.ps1:**
+1. **Edit `profile.config.psd1`** (created next to `$PROFILE` by the installer). It's never overwritten by `Update-Profile` or re-running the installer:
    ```powershell
-   $codingLoc = "C:\Your\Coding\Path"
-   $psProfileLoc = "C:\Users\$username\Documents\WindowsPowerShell"
+   @{
+       CodingPath   = 'D:\Dev'          # where your repos live
+       GitHubUser   = 'your-username'   # used by goToGitHubRepo
+       Theme        = 'jandedobbeleer'  # any oh-my-posh theme name
+       ClearOnStart = $false
+       ShowLoadTime = $true
+   }
    ```
 
 2. **Add custom aliases in profile:**
@@ -117,7 +136,7 @@
 
 3. **Customise oh-my-posh theme:**
    - Browse themes: `Get-PoshThemes`
-   - Change theme in profile: `--config "$env:POSH_THEMES_PATH\theme-name.omp.json"`
+   - Set `Theme` in `profile.config.psd1`
 
 4. **Add personal functions:**
    - Create new .ps1 files in Functions directory
@@ -138,3 +157,11 @@ $env:MY_VARIABLE = "value"
 - **Aliases:** Create short aliases for frequently used commands
 - **Module Loading:** Only import modules you actually use
 - **Function Scope:** Use local variables in functions to avoid conflicts
+
+## 🤝 Contributing
+
+Ideas and PRs welcome - see [CONTRIBUTING.md](CONTRIBUTING.md), or open a **Function request** issue.
+
+## 📄 Licence
+
+[MIT](LICENSE)
