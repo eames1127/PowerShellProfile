@@ -30,3 +30,19 @@ Describe 'Main profile' {
         $config.Keys | Should -Contain 'CodingPath'
     }
 }
+
+Describe 'Function help' {
+    BeforeDiscovery {
+        $script:helpCases = foreach ($file in Get-ChildItem -Path (Join-Path $PSScriptRoot '..\Functions') -Filter '*.ps1' -Recurse) {
+            $ast = [System.Management.Automation.Language.Parser]::ParseFile($file.FullName, [ref]$null, [ref]$null)
+            $ast.FindAll({ $args[0] -is [System.Management.Automation.Language.FunctionDefinitionAst] }, $false) |
+                ForEach-Object { @{ Name = $_.Name; File = $file.Name; Ast = $_ } }
+        }
+    }
+
+    It '<Name> in <File> has a .SYNOPSIS' -ForEach $helpCases {
+        $help = $Ast.GetHelpContent()
+        $help | Should -Not -BeNullOrEmpty
+        $help.Synopsis | Should -Not -BeNullOrEmpty
+    }
+}

@@ -1,5 +1,19 @@
-# Compress directory contents to dated archive
-# Parameters: $fileName (archive name), $loc (source directory), $dest (destination directory)
+<#
+.SYNOPSIS
+Compress a folder's contents into a dated .zip archive in another folder.
+
+.PARAMETER fileName
+Archive name prefix (the date is appended)
+
+.PARAMETER loc
+Folder whose contents are archived
+
+.PARAMETER dest
+Folder the .zip is written to
+
+.EXAMPLE
+compressAndCopy -fileName backup -loc C:\Projects\site -dest D:\Archives
+#>
 function compressAndCopy {
     param(
         [Parameter(Mandatory=$true)]
@@ -18,10 +32,19 @@ function compressAndCopy {
     Write-Host "Finished copying files to $archive"
 }
 
-# Validate that all required files exist in a directory - useful for deployment verification,
-# backup validation, or ensuring project dependencies are present
-# Parameters: $path (directory to check), $fileList (array of filenames to verify)
-# Returns: $true if all files found, $false if any missing
+<#
+.SYNOPSIS
+Check that a list of required files exists in a folder. Returns $true or $false.
+
+.PARAMETER path
+Folder to check
+
+.PARAMETER fileList
+File names that must be present
+
+.EXAMPLE
+validateFiles -path C:\Deploy -fileList @("app.exe", "app.config")
+#>
 function validateFiles {
     param(
         [Parameter(Mandatory=$true)]
@@ -54,8 +77,22 @@ function validateFiles {
     }
 }
 
-# Copy files by extension filter with confirmation
-# Parameters: $copyFrom (source path, defaults to current location), $copyTo (destination path), $extFilter (file extensions to copy)
+<#
+.SYNOPSIS
+Recursively copy files matching extension filters to a destination, with confirmation.
+
+.PARAMETER copyFrom
+Source folder (defaults to the current location)
+
+.PARAMETER copyTo
+Destination folder
+
+.PARAMETER extFilter
+Wildcard patterns to include
+
+.EXAMPLE
+copyByExtension -copyTo D:\Backup -extFilter @("*.ps1", "*.md")
+#>
 function copyByExtension {
     param(
         [Parameter(Mandatory=$false)]

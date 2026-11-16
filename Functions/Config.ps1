@@ -1,4 +1,10 @@
-# Install and configure terminal with oh-my-posh theme and required modules
+<#
+.SYNOPSIS
+Install posh-git, oh-my-posh and the Meslo Nerd Font for the terminal theme.
+
+.EXAMPLE
+installTerminalconfig
+#>
 function installTerminalconfig {
     # Install posh-git module for Git integration
     Write-Host "Installing posh-git..." -ForegroundColor Yellow

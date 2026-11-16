@@ -1,5 +1,16 @@
-# Check Event Viewer logs on multiple servers and export to PDF
-# Parameters: $servers (array of server names - replace placeholders with actual server names), $days (days back to check)
+<#
+.SYNOPSIS
+Export recent error events from one or more servers to PDF.
+
+.PARAMETER servers
+Computer names to query
+
+.PARAMETER days
+How many days back to check
+
+.EXAMPLE
+checkEventLogs -servers @("SERVER01", "SERVER02") -days 7
+#>
 function checkEventLogs {
     param(
         [Parameter(Mandatory=$false)]
@@ -32,13 +43,25 @@ function checkEventLogs {
     }
 }
 
-# Restart Windows services locally or remotely with predefined service IDs
-# Parameters: $serviceID (1=Spooler, 2=Custom, 88=Manual input, 0/default=List services), $machine (remote computer name, empty for local)
-# Usage examples:
-#   manageServices                           # List running services locally
-#   manageServices -serviceID 1              # Restart Spooler service locally
-#   manageServices -serviceID 88             # Manually enter service name to restart locally
-#   manageServices -serviceID 1 -machine "SERVER01"  # Restart Spooler on remote server
+<#
+.SYNOPSIS
+List or restart Windows services locally or on a remote machine.
+
+.PARAMETER serviceID
+1 = Spooler, 2 = reserved for a custom service (not yet configured), 88 = prompt for a name, anything else = list running services
+
+.PARAMETER machine
+Remote computer name (blank for local)
+
+.EXAMPLE
+manageServices
+
+.EXAMPLE
+manageServices -serviceID 1
+
+.EXAMPLE
+manageServices -serviceID 88 -machine SERVER01
+#>
 function manageServices {
     param(
         [Parameter(Mandatory=$false)]
