@@ -30,11 +30,14 @@ Thanks for wanting to help! Function ideas, bug fixes and docs improvements are 
 
 ## Before opening a PR
 
-Run the same checks as CI:
+Run the same checks as CI. These tools are only needed to work on the profile, not to use it.
+
+The tests need **Pester 5 or later**. Windows PowerShell 5.1 ships with Pester 3.4, which can't run them, and Windows' built-in copy is signed differently, so installing over it needs `-SkipPublisherCheck` (as [Pester's install guide](https://pester.dev/docs/introduction/installation) recommends). The new version installs alongside the old one.
 
 ```powershell
-Install-Module PSScriptAnalyzer, Pester -Scope CurrentUser
-Invoke-ScriptAnalyzer -Path . -Recurse -Settings ./PSScriptAnalyzerSettings.psd1
+Install-Module Pester -MinimumVersion 5.0 -Scope CurrentUser -Force -SkipPublisherCheck
+Install-Module PSScriptAnalyzer -Scope CurrentUser
+Invoke-ScriptAnalyzer -Path . -Recurse -Settings ./PSScriptAnalyzerSettings.psd1 -Severity Warning, Error
 Invoke-Pester ./tests
 ```
 

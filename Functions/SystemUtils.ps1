@@ -48,7 +48,7 @@ function checkEventLogs {
 List or restart Windows services locally or on a remote machine.
 
 .PARAMETER serviceID
-1 = Spooler, 88 = prompt for a name, anything else = list running services
+1 = Spooler, 2 = reserved for a custom service (not yet configured), 88 = prompt for a name, anything else = list running services
 
 .PARAMETER machine
 Remote computer name (blank for local)
