@@ -1,5 +1,13 @@
-# Network speed test using built-in PowerShell capabilities
-# Uses a ~10MB file by default - smaller files mostly measure latency rather than bandwidth
+<#
+.SYNOPSIS
+Rough download speed test (downloads ~10MB and reports Mbps).
+
+.PARAMETER testUrl
+URL of the file to download
+
+.EXAMPLE
+speedTest
+#>
 function speedTest {
     param(
         [Parameter(Mandatory=$false)]
@@ -24,7 +32,13 @@ function speedTest {
     }
 }
 
-# Display public and private IP addresses
+<#
+.SYNOPSIS
+Show private IPv4 addresses, public IP and default gateway.
+
+.EXAMPLE
+myIP
+#>
 function myIP {
     Write-Host "Network Information:" -ForegroundColor Cyan
     
@@ -46,7 +60,19 @@ function myIP {
     Write-Host "Gateway: $gateway" -ForegroundColor Green
 }
 
-# List available WiFi networks and connect to specified network
+<#
+.SYNOPSIS
+List saved WiFi profiles, or connect to one.
+
+.PARAMETER connectTo
+Saved WiFi profile name to connect to
+
+.EXAMPLE
+wifiList
+
+.EXAMPLE
+wifiList -connectTo "HomeNetwork"
+#>
 function wifiList {
     param(
         [Parameter(Mandatory=$false)]
@@ -64,7 +90,16 @@ function wifiList {
     }
 }
 
-# Check what process is using a specific port
+<#
+.SYNOPSIS
+Show which process is using a local TCP port.
+
+.PARAMETER port
+Local TCP port number
+
+.EXAMPLE
+checkPort 8080
+#>
 function checkPort {
     param(
         [Parameter(Mandatory=$true)]
@@ -88,7 +123,16 @@ function checkPort {
     }
 }
 
-# Network diagnostics combo - ping, traceroute, DNS lookup
+<#
+.SYNOPSIS
+Run ping, DNS lookup and traceroute against a host.
+
+.PARAMETER target
+Host name or IP address
+
+.EXAMPLE
+netDiag github.com
+#>
 function netDiag {
     param(
         [Parameter(Mandatory=$true)]
@@ -121,7 +165,13 @@ function netDiag {
     }
 }
 
-# Show network adapter information
+<#
+.SYNOPSIS
+List network adapters that are up, with link speed.
+
+.EXAMPLE
+netAdapters
+#>
 function netAdapters {
     Write-Host "Network Adapters:" -ForegroundColor Cyan
     Get-NetAdapter | Where-Object Status -eq "Up" | 
@@ -129,7 +179,16 @@ function netAdapters {
     Format-Table -AutoSize
 }
 
-# Quick ping test
+<#
+.SYNOPSIS
+Single ping that returns $true or $false.
+
+.PARAMETER target
+Host name or IP address
+
+.EXAMPLE
+if (pingTest server01) { "up" }
+#>
 function pingTest {
     param(
         [Parameter(Mandatory=$true)]

@@ -56,6 +56,8 @@ Then edit `profile.config.psd1` (next to your `$PROFILE`) and open a new termina
 
 ## 📚 Function Reference
 
+Run **`profileHelp`** to list every function with a one-line description (`profileHelp net` to filter), and `Get-Help <function> -Examples` for usage.
+
 ### TimeSavers Functions
 - `goToGitHubRepo [$username] $repo` - Open a repo on GitHub (username defaults to `GitHubUser` in config)
 - `goToCoding()` - Navigate to coding directory and open VS Code
@@ -83,6 +85,10 @@ Then edit `profile.config.psd1` (next to your `$PROFILE`) and open a new termina
 - `netDiag $target` - Complete network diagnostics (ping, DNS, traceroute)
 - `netAdapters` - Show active network adapter information
 - `pingTest $target` - Quick boolean ping test
+
+### Profile Functions
+- `profileHelp [$filter]` - List all profile functions grouped by file
+- `ll` - List files including hidden ones
 
 ### Config Functions
 - `installTerminalconfig` - Install and configure oh-my-posh with required modules
@@ -141,6 +147,7 @@ Then edit `profile.config.psd1` (next to your `$PROFILE`) and open a new termina
 4. **Add personal functions:**
    - Create new .ps1 files in Functions directory
    - Functions are automatically loaded on profile startup
+   - Add a `.SYNOPSIS` help block so they show up in `profileHelp` (see [CONTRIBUTING.md](CONTRIBUTING.md))
 
 ### Environment Variables
 ```powershell

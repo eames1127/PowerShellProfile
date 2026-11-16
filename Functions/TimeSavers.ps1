@@ -3,8 +3,22 @@ $codingLoc = if ($profileConfig.CodingPath) { $profileConfig.CodingPath } else {
 # Works for both Windows PowerShell 5.1 and PowerShell 7 profile folders
 $psProfileLoc = Split-Path -Parent $PROFILE
 
-# Opens GitHub repository in default browser
-# Usage: goToGitHubRepo <username> <repo>, or goToGitHubRepo <repo> to use GitHubUser from profile.config.psd1
+<#
+.SYNOPSIS
+Open a GitHub repository in the browser.
+
+.PARAMETER username
+GitHub user (or the repo name if only one argument is given - GitHubUser from config is then used)
+
+.PARAMETER loc
+Repository name
+
+.EXAMPLE
+goToGitHubRepo PowerShellProfile
+
+.EXAMPLE
+goToGitHubRepo someUser someRepo
+#>
 function goToGitHubRepo($username, $loc) {
     if (-not $loc) {
         $loc = $username
@@ -19,15 +33,29 @@ function goToGitHubRepo($username, $loc) {
     Start-Process $url
 }
 
-# Navigate to coding directory and open in VS Code
+<#
+.SYNOPSIS
+Go to your coding folder (CodingPath) and open it in VS Code.
+
+.EXAMPLE
+goToCoding
+#>
 function goToCoding() {
     Write-Host "Heading to $codingLoc"
     Set-Location $codingLoc
     code .
 }
 
-# Clone repository to coding directory
-# Parameters: $loc (git repository URL or path)
+<#
+.SYNOPSIS
+Clone a git repository into your coding folder.
+
+.PARAMETER loc
+Git repository URL
+
+.EXAMPLE
+initRepo https://github.com/user/repo.git
+#>
 function initRepo($loc) {
     Write-Host "Heading to $codingLoc"
     Set-Location $codingLoc
@@ -35,22 +63,42 @@ function initRepo($loc) {
     git clone $loc
 }
 
-# Navigate to specific repository and show git status
-# Parameters: $repo (repository folder name)
+<#
+.SYNOPSIS
+Go to a repository in your coding folder and show git status.
+
+.PARAMETER repo
+Repository folder name under CodingPath
+
+.EXAMPLE
+goToRepo PowerShellProfile
+#>
 function goToRepo($repo) {
     $codingRepo = "$codingLoc\$repo"
     Set-Location $codingRepo
     git status
 }
 
-# Navigate to PowerShell profile directory and open in VS Code
+<#
+.SYNOPSIS
+Go to your PowerShell profile folder and open it in VS Code.
+
+.EXAMPLE
+psProfile
+#>
 function psProfile() {
     Write-Host "Heading to $psProfileLoc"
     Set-Location $psProfileLoc
     code .
 }
 
-# Copy PowerShell profile from system location to code repository
+<#
+.SYNOPSIS
+Copy your live profile and Functions back into the code repository.
+
+.EXAMPLE
+copyPSProfileToCode
+#>
 function copyPSProfileToCode() {
     Write-Host "Copying from $psProfileLoc"
     Copy-Item -Path "$psProfileLoc\Microsoft.PowerShell_profile.ps1" -Destination "$codingLoc\PowerShellProfile"
@@ -61,6 +109,9 @@ function copyPSProfileToCode() {
 # copyPSProfileFromCode is now an alias for Update-Profile (defined in the main profile)
 
 <#
+.SYNOPSIS
+List merge commits on your current branch since the tip of another branch.
+
 .DESCRIPTION
 Find all local merged commits from specified branch to the last commit of your currently checked out branch.
 
