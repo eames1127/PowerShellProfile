@@ -156,3 +156,64 @@ function getChangesInBranch {
 
     Write-Host "`nScript Completed." -ForegroundColor Green
 }
+
+# Tab-complete repository folder names for goToRepo (e.g. goToRepo Pow<Tab>)
+Register-ArgumentCompleter -CommandName goToRepo -ParameterName repo -ScriptBlock {
+    param($commandName, $parameterName, $wordToComplete)
+    Get-ChildItem -Path $codingLoc -Directory -ErrorAction SilentlyContinue |
+        Where-Object Name -like "$wordToComplete*" |
+        ForEach-Object { [System.Management.Automation.CompletionResult]::new($_.Name) }
+}
+
+<#
+.SYNOPSIS
+Go up one folder.
+#>
+function .. { Set-Location .. }
+
+<#
+.SYNOPSIS
+Go up two folders.
+#>
+function ... { Set-Location ..\.. }
+
+<#
+.SYNOPSIS
+Create a folder (including parents) and move into it.
+
+.PARAMETER path
+Folder to create.
+
+.EXAMPLE
+mkcd C:\Coding\newProject
+#>
+function mkcd {
+    param(
+        [Parameter(Mandatory=$true, Position=0)]
+        [string]$path
+    )
+    New-Item -ItemType Directory -Path $path -Force | Out-Null
+    Set-Location $path
+}
+
+<#
+.SYNOPSIS
+Create an empty file, or update the timestamp of an existing one.
+
+.PARAMETER path
+File to create or touch.
+
+.EXAMPLE
+touch notes.md
+#>
+function touch {
+    param(
+        [Parameter(Mandatory=$true, Position=0)]
+        [string]$path
+    )
+    if (Test-Path -LiteralPath $path) {
+        (Get-Item -LiteralPath $path).LastWriteTime = Get-Date
+    } else {
+        New-Item -ItemType File -Path $path | Out-Null
+    }
+}

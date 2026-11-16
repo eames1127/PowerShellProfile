@@ -33,6 +33,8 @@ Then edit `profile.config.psd1` (next to your `$PROFILE`) and open a new termina
 - **Functions/FileUtils.ps1** - File system operations and utilities
 - **Functions/SystemUtils.ps1** - System administration and monitoring tools
 - **Functions/NetworkUtils.ps1** - Network diagnostics and connectivity tools
+- **Functions/GitUtils.ps1** - Feature-branch and pull request shortcuts
+- **Functions/PSReadLine.ps1** - History suggestions, smarter history search and menu completion
 
 ## ✨ Key Features
 
@@ -40,7 +42,8 @@ Then edit `profile.config.psd1` (next to your `$PROFILE`) and open a new termina
 - 🎨 Oh-my-posh integration with custom theme
 - 📂 Quick navigation to coding projects and repositories
 - 💾 PowerShell profile backup/sync functions
-- 🔀 Git branch comparison tools
+- 🔀 Git branch comparison tools and feature-branch / PR shortcuts
+- ⌨️ PSReadLine predictive suggestions and prefix history search
 - 📦 File compression and archiving utilities
 - 📊 Event log monitoring and reporting
 - 🛠️ Windows service management tools
@@ -67,21 +70,42 @@ Run **`profileHelp`** to list every function with a one-line description (`profi
 - `copyPSProfileToCode()` - Backup profile to code repository
 - `Update-Profile` (alias `copyPSProfileFromCode`) - Restore profile from code repository, keeping your config
 - `getChangesInBranch -gitLoc $path -branchName $branch [-filter "*Jira*"] [-update]` - Compare branch merges
+- `..` / `...` - Go up one / two folders
+- `mkcd $path` - Create a folder and move into it
+- `touch $file` - Create a file or update its timestamp
+
+`goToRepo` tab-completes repository names from your coding folder.
+
+### GitUtils Functions
+- `newFeature $name [-prefix fix]` - Update the default branch and create `feat/<name>`
+- `pr` - Push the current branch and open a pull request (GitHub CLI or browser)
+- `cleanBranches` - Delete local branches already merged into the default branch
+- `gs` - Short git status
+- `glog [$count]` - Compact git log graph
+- `gitUndo` - Undo the last commit, keeping changes staged
+- `getDefaultBranch` - Print the repo's default branch name
 
 ### FileUtils Functions
 - `compressAndCopy -fileName $name -loc $source -dest $destination` - Create dated archive
 - `validateFiles -path $directory -fileList @("file1", "file2")` - Verify required files exist
 - `copyByExtension -copyFrom $source -copyTo $dest -extFilter @("*.ps1")` - Copy files by extension
+- `findFile $pattern [-path $folder]` - Find files by name, recursively
+- `dirSize [$path] [-top 10]` - Show the largest sub-folders
 
 ### SystemUtils Functions
 - `checkEventLogs -servers @("server1") -days 10` - Check event logs and export to PDF
 - `manageServices -serviceID 1 -machine "server"` - Restart services locally or remotely
+- `sysInfo` - OS, uptime, CPU, memory and disk space
+- `updateAll [-skipModules]` - Upgrade winget packages and PowerShell modules
+- `isAdmin` - `$true` if the session is elevated
+- `sudoLast` - Re-run the previous command in an elevated window
 
 ### NetworkUtils Functions
 - `speedTest` - Test network download speed
 - `myIP` - Display private IP, public IP, and gateway
 - `wifiList` - List WiFi networks or connect to network
 - `checkPort $port` - Show what process is using a port
+- `killPort $port` - Stop the process listening on a port (asks first)
 - `netDiag $target` - Complete network diagnostics (ping, DNS, traceroute)
 - `netAdapters` - Show active network adapter information
 - `pingTest $target` - Quick boolean ping test
@@ -115,6 +139,10 @@ Run **`profileHelp`** to list every function with a one-line description (`profi
 - Run PowerShell as Administrator for some network commands
 - Check Windows Firewall settings
 - Verify network connectivity
+
+**Suggestions or ListView not showing:**
+- Update PSReadLine: `Install-Module PSReadLine -Force -Scope CurrentUser` (Windows PowerShell 5.1 ships an older version)
+- Press `F2` to switch between inline and list suggestions
 
 **Slow profile loading:**
 - Use `Update-Profile` function to get latest optimisations

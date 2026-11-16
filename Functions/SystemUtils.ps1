@@ -117,3 +117,102 @@ function manageServices {
     }
     Write-Host "Operation completed" -ForegroundColor Green
 }
+<#
+.SYNOPSIS
+Return $true if the current session is running as Administrator.
+
+.EXAMPLE
+if (-not (isAdmin)) { sudoLast }
+#>
+function isAdmin {
+    ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole(
+        [Security.Principal.WindowsBuiltInRole]::Administrator)
+}
+
+<#
+.SYNOPSIS
+Re-run your previous command in a new elevated (Administrator) window.
+
+.EXAMPLE
+Restart-Service Spooler   # fails: access denied
+sudoLast
+#>
+function sudoLast {
+    $last = (Get-History -Count 1).CommandLine
+    if (-not $last) {
+        Write-Host "No previous command in history." -ForegroundColor Red
+        return
+    }
+    $shell = (Get-Process -Id $PID).Path
+    Write-Host "Re-running as Administrator: $last" -ForegroundColor Yellow
+    # Encode the command so quotes and spaces survive being passed to the new process;
+    # -NoExit keeps the window open so you can read the output
+    $encoded = [Convert]::ToBase64String([Text.Encoding]::Unicode.GetBytes($last))
+    Start-Process -FilePath $shell -Verb RunAs -ArgumentList '-NoExit', '-EncodedCommand', $encoded
+}
+
+<#
+.SYNOPSIS
+Show OS, uptime, CPU, memory and disk space at a glance.
+
+.EXAMPLE
+sysInfo
+#>
+function sysInfo {
+    $os = Get-CimInstance Win32_OperatingSystem
+    $cpu = Get-CimInstance Win32_Processor | Select-Object -First 1
+    $uptime = (Get-Date) - $os.LastBootUpTime
+    $totalGB = [math]::Round($os.TotalVisibleMemorySize / 1MB, 1)
+    $freeGB = [math]::Round($os.FreePhysicalMemory / 1MB, 1)
+
+    Write-Host "System Information:" -ForegroundColor Cyan
+    Write-Host "Computer: $env:COMPUTERNAME"
+    Write-Host "OS:       $($os.Caption) (build $($os.BuildNumber))"
+    Write-Host "Uptime:   $($uptime.Days)d $($uptime.Hours)h $($uptime.Minutes)m"
+    Write-Host "CPU:      $($cpu.Name.Trim()) - $($cpu.LoadPercentage)% load"
+    Write-Host "Memory:   $([math]::Round($totalGB - $freeGB, 1)) GB used of $totalGB GB"
+
+    Write-Host "`nDisks:" -ForegroundColor Cyan
+    Get-CimInstance Win32_LogicalDisk -Filter "DriveType=3" | ForEach-Object {
+        $free = [math]::Round($_.FreeSpace / 1GB, 1)
+        $size = [math]::Round($_.Size / 1GB, 1)
+        $colour = if ($size -gt 0 -and ($free / $size) -lt 0.1) { 'Red' } else { 'Green' }
+        Write-Host "  $($_.DeviceID) $free GB free of $size GB" -ForegroundColor $colour
+    }
+}
+
+<#
+.SYNOPSIS
+Upgrade all winget packages and installed PowerShell modules.
+
+.PARAMETER skipModules
+Only run winget, not Update-Module.
+
+.EXAMPLE
+updateAll
+#>
+function updateAll {
+    param(
+        [switch]$skipModules
+    )
+
+    if (Get-Command winget -ErrorAction SilentlyContinue) {
+        Write-Host "Upgrading winget packages..." -ForegroundColor Yellow
+        winget upgrade --all --accept-source-agreements --accept-package-agreements
+    } else {
+        Write-Warning "winget not found - skipping app upgrades"
+    }
+
+    if (-not $skipModules) {
+        Write-Host "`nUpdating PowerShell modules..." -ForegroundColor Yellow
+        Get-InstalledModule -ErrorAction SilentlyContinue | ForEach-Object {
+            try {
+                Update-Module -Name $_.Name -ErrorAction Stop
+                Write-Host "  $($_.Name) checked" -ForegroundColor Green
+            } catch {
+                Write-Host "  $($_.Name) failed: $($_.Exception.Message)" -ForegroundColor Red
+            }
+        }
+    }
+    Write-Host "`nUpdates complete." -ForegroundColor Green
+}

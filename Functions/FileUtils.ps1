@@ -120,3 +120,58 @@ function copyByExtension {
     
     Write-Host "Finished copying files to $copyTo" -ForegroundColor Green
 }
+<#
+.SYNOPSIS
+Find files by name pattern under a folder (recursive).
+
+.PARAMETER pattern
+Text or wildcard to match in the file name. Plain text is matched anywhere in the name.
+
+.PARAMETER path
+Folder to search (defaults to the current location).
+
+.EXAMPLE
+findFile profile
+
+.EXAMPLE
+findFile *.log -path C:\Logs
+#>
+function findFile {
+    param(
+        [Parameter(Mandatory=$true, Position=0)]
+        [string]$pattern,
+        [Parameter(Mandatory=$false)]
+        [string]$path = (Get-Location)
+    )
+    if ($pattern -notmatch '[\*\?]') { $pattern = "*$pattern*" }
+    Get-ChildItem -Path $path -Filter $pattern -Recurse -File -ErrorAction SilentlyContinue |
+        Select-Object LastWriteTime, @{ Name = 'SizeKB'; Expression = { [math]::Round($_.Length / 1KB, 1) } }, FullName
+}
+
+<#
+.SYNOPSIS
+Show the largest sub-folders of a folder, by total size.
+
+.PARAMETER path
+Folder to measure (defaults to the current location).
+
+.PARAMETER top
+How many folders to show (default 10).
+
+.EXAMPLE
+dirSize C:\Users -top 5
+#>
+function dirSize {
+    param(
+        [Parameter(Mandatory=$false, Position=0)]
+        [string]$path = (Get-Location),
+        [Parameter(Mandatory=$false)]
+        [int]$top = 10
+    )
+    Write-Host "Measuring folders in $path..." -ForegroundColor Yellow
+    Get-ChildItem -Path $path -Directory -Force -ErrorAction SilentlyContinue | ForEach-Object {
+        $bytes = (Get-ChildItem -Path $_.FullName -Recurse -File -Force -ErrorAction SilentlyContinue |
+            Measure-Object -Property Length -Sum).Sum
+        [pscustomobject]@{ Folder = $_.Name; SizeMB = [math]::Round($bytes / 1MB, 1) }
+    } | Sort-Object SizeMB -Descending | Select-Object -First $top | Format-Table -AutoSize
+}
