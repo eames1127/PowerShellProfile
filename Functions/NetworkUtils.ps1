@@ -1,11 +1,12 @@
 # Network speed test using built-in PowerShell capabilities
+# Uses a ~10MB file by default - smaller files mostly measure latency rather than bandwidth
 function speedTest {
     param(
         [Parameter(Mandatory=$false)]
-        [string]$testUrl = "http://speedtest.ftp.otenet.gr/files/test100k.db"
+        [string]$testUrl = "https://speed.cloudflare.com/__down?bytes=10000000"
     )
     Write-Host "Testing network speed..." -ForegroundColor Yellow
-    $testFile = "$env:TEMP\speedtest.tmp"
+    $testFile = Join-Path ([IO.Path]::GetTempPath()) "speedtest.tmp"
     
     try {
         $start = Get-Date
@@ -15,7 +16,7 @@ function speedTest {
         $fileSize = (Get-Item $testFile).Length / 1MB
         $speed = [math]::Round($fileSize / $duration * 8, 2)
         
-        Write-Host "Download Speed: $speed Mbps ($(($fileSize * 1024).ToString('F1')) KB file)" -ForegroundColor Green
+        Write-Host "Download Speed: $speed Mbps ($($fileSize.ToString('F1')) MB file)" -ForegroundColor Green
         Remove-Item $testFile -ErrorAction SilentlyContinue
     }
     catch {

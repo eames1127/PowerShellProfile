@@ -10,8 +10,9 @@ function compressAndCopy {
         [String]$dest
     )
 
-    $date = Get-Date -Format "dd-M-yyyy"
-    $archive = "$dest\$fileName`_$date"
+    # UK date format (day-month-year)
+    $date = Get-Date -Format "dd-MM-yyyy"
+    $archive = Join-Path $dest "$($fileName)_$date.zip"
     
     Get-ChildItem -Path $loc | Compress-Archive -DestinationPath $archive -CompressionLevel Optimal -Verbose -Confirm
     Write-Host "Finished copying files to $archive"

@@ -46,15 +46,11 @@ function psProfile() {
 function copyPSProfileToCode() {
     Write-Host "Copying from $psProfileLoc"
     Copy-Item -Path "$psProfileLoc\Microsoft.PowerShell_profile.ps1" -Destination "$codingLoc\PowerShellProfile"
-    Copy-Item -Path "$psProfileLoc\Functions" -Destination "$codingLoc\PowerShellProfile\Functions" -Recurse
+    # Destination is the repo root (not ...\Functions) so a second run doesn't create Functions\Functions
+    Copy-Item -Path "$psProfileLoc\Functions" -Destination "$codingLoc\PowerShellProfile" -Recurse -Force
 }
 
-# Copy PowerShell profile from code repository to system location
-function copyPSProfileFromCode() {
-    Write-Host "Copying to $psProfileLoc"
-    Copy-Item -Path "$codingLoc\PowerShellProfile\Microsoft.PowerShell_profile.ps1" -Destination $psProfileLoc
-    Copy-Item -Path "$codingLoc\PowerShellProfile\Functions" -Destination $psProfileLoc -Recurse
-}
+# copyPSProfileFromCode is now an alias for Update-Profile (defined in the main profile)
 
 <#
 .DESCRIPTION
@@ -66,8 +62,15 @@ Your Git checkout location. e.g. c:/coding/git
 .PARAMETER branchName
 Name of comparison branch
 
+.PARAMETER filter
+Optional: wildcard filter applied to merge commit messages. Defaults to "*" (all merges).
+e.g. "*Merged in Jira*" to only show Jira-linked merges.
+
 .PARAMETER update
-Optional: "y" to pull latest changes before comparison
+Optional: pull latest changes before comparison
+
+.EXAMPLE
+getChangesInBranch -gitLoc C:\Coding\myRepo -branchName release -filter "*Merged in Jira*" -update
 #>
 function getChangesInBranch {
     param(
@@ -76,20 +79,21 @@ function getChangesInBranch {
         [Parameter(Mandatory=$true)]
         [String]$branchName,
         [Parameter(Mandatory=$false)]
-        [String]$update
+        [String]$filter = "*",
+        [switch]$update
     )
 
     Set-Location $gitLoc
 
-    if ($update -eq "y") {
+    if ($update) {
         git pull
     }
     $lastCommitHash = git log -n 1 $branchName --pretty=format:"%H"
     $branch = git branch --show-current
 
     Write-Host "`nWarning: you are currently on $branch branch." -ForegroundColor Yellow
-    Write-Host "`nFetching all commits since $lastCommitHash. Press enter to view all commits until you see (END) then press q.`n" -ForegroundColor Green
-    git log $lastCommitHash..Head --oneline --merges | Where-Object {$_ -Like "*Merged in Jira*"} | Format-Table
+    Write-Host "`nFetching all merge commits since $lastCommitHash matching '$filter'.`n" -ForegroundColor Green
+    git log "$lastCommitHash..HEAD" --oneline --merges | Where-Object { $_ -like $filter }
 
     Write-Host "`nScript Completed." -ForegroundColor Green
 }
