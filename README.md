@@ -97,10 +97,10 @@
 - Verify network connectivity
 
 **Slow profile loading:**
-- Use `Update-Profile` function to get latest optimizations
+- Use `Update-Profile` function to get latest optimisations
 - Remove unused functions from Functions directory
 
-## ⚙️ Customization Guide
+## ⚙️ Customisation Guide
 
 ### Personal Configuration
 
@@ -115,7 +115,7 @@
    Set-Alias -Name "myalias" -Value "My-Function"
    ```
 
-3. **Customize oh-my-posh theme:**
+3. **Customise oh-my-posh theme:**
    - Browse themes: `Get-PoshThemes`
    - Change theme in profile: `--config "$env:POSH_THEMES_PATH\theme-name.omp.json"`
 

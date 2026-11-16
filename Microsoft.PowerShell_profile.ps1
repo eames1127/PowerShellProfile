@@ -12,7 +12,7 @@ try {
     Write-Warning "posh-git module not found. Install with: Install-Module posh-git"
 }
 
-# Initialize oh-my-posh with custom theme and error handling
+# Initialise oh-my-posh with custom theme and error handling
 try {
     if (Get-Command oh-my-posh -ErrorAction SilentlyContinue) {
         oh-my-posh init pwsh --config "$env:POSH_THEMES_PATH\stelbent-compact.minimal.omp.json" | Invoke-Expression
@@ -20,7 +20,7 @@ try {
         Write-Warning "oh-my-posh not found. Install with: winget install JanDeDobbeleer.OhMyPosh"
     }
 } catch {
-    Write-Warning "Failed to initialize oh-my-posh: $($_.Exception.Message)"
+    Write-Warning "Failed to initialise oh-my-posh: $($_.Exception.Message)"
 }
 
 # Set terminal appearance - only label the window "Admin" when it really is elevated
