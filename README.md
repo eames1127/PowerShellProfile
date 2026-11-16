@@ -1,19 +1,21 @@
-# PowerShell Profile Collection
+# PowerShellProfile
 
 [![CI](https://github.com/eames1127/PowerShellProfile/actions/workflows/ci.yml/badge.svg)](https://github.com/eames1127/PowerShellProfile/actions/workflows/ci.yml)
 [![Licence: MIT](https://img.shields.io/badge/Licence-MIT-blue.svg)](LICENSE)
 
-🚀 **Community PowerShell profile** with productivity functions and terminal configuration for Windows developers and system administrators.
+My PowerShell profile and the functions I've built up over time for day-to-day dev work and Windows admin jobs. It sets up an oh-my-posh prompt and then loads everything in the `Functions` folder. Feel free to use it, pinch bits of it or suggest additions.
 
-## 📥 Quick Start
+It's written for Windows (Windows PowerShell 5.1 or PowerShell 7).
 
-**One-line install** (backs up your existing profile first):
+## Installing
+
+The quickest way is the install script. It backs up your existing profile before copying anything over:
 
 ```powershell
 irm https://raw.githubusercontent.com/eames1127/PowerShellProfile/master/install.ps1 | iex
 ```
 
-Or from a clone, also installing posh-git, oh-my-posh and the Meslo font:
+Or clone the repo and run it from there. `-InstallTerminal` also installs posh-git, oh-my-posh and the Meslo font:
 
 ```powershell
 git clone https://github.com/eames1127/PowerShellProfile.git
@@ -21,182 +23,102 @@ cd PowerShellProfile
 .\install.ps1 -InstallTerminal
 ```
 
-Then edit `profile.config.psd1` (next to your `$PROFILE`) and open a new terminal.
+Once it's installed, open `profile.config.psd1` (it sits next to your `$PROFILE`) and set your own paths, then open a new terminal.
 
-## 📁 What's Included
+## Settings
 
-- **Microsoft.PowerShell_profile.ps1** - Main profile that loads oh-my-posh theme and imports all functions
-- **profile.config.example.psd1** - Template for your personal settings
-- **install.ps1** - Installer with automatic backup
-- **Functions/TimeSavers.ps1** - Development workflow shortcuts (GitHub, coding directories, git operations)
-- **Functions/Config.ps1** - Terminal setup and configuration utilities  
-- **Functions/FileUtils.ps1** - File system operations and utilities
-- **Functions/SystemUtils.ps1** - System administration and monitoring tools
-- **Functions/NetworkUtils.ps1** - Network diagnostics and connectivity tools
-- **Functions/GitUtils.ps1** - Feature-branch and pull request shortcuts
-- **Functions/PSReadLine.ps1** - History suggestions, smarter history search and menu completion
+Your personal settings live in `profile.config.psd1`, so you don't need to edit any of the scripts. Neither `Update-Profile` nor the installer will overwrite it.
 
-## ✨ Key Features
-
-- 🔄 Automated function loading from Functions directory
-- 🎨 Oh-my-posh integration with custom theme
-- 📂 Quick navigation to coding projects and repositories
-- 💾 PowerShell profile backup/sync functions
-- 🔀 Git branch comparison tools and feature-branch / PR shortcuts
-- ⌨️ PSReadLine predictive suggestions and prefix history search
-- 📦 File compression and archiving utilities
-- 📊 Event log monitoring and reporting
-- 🛠️ Windows service management tools
-- 🌐 Network speed testing and IP information
-- 🔍 Port usage checking and network diagnostics
-- 📡 WiFi network management and connectivity tools
-
-## 🔧 Requirements
-
-- Windows PowerShell 5.1+ or PowerShell 7+
-- Administrator privileges (for some system functions)
-- Optional: [Oh My Posh](https://ohmyposh.dev/) for enhanced terminal theming
-
-## 📚 Function Reference
-
-Run **`profileHelp`** to list every function with a one-line description (`profileHelp net` to filter), and `Get-Help <function> -Examples` for usage.
-
-### TimeSavers Functions
-- `goToGitHubRepo [$username] $repo` - Open a repo on GitHub (username defaults to `GitHubUser` in config)
-- `goToCoding()` - Navigate to coding directory and open VS Code
-- `goToRepo($repo)` - Navigate to specific repository and show git status
-- `initRepo($url)` - Clone repository to coding directory
-- `psProfile()` - Open PowerShell profile directory in VS Code
-- `copyPSProfileToCode()` - Backup profile to code repository
-- `Update-Profile` (alias `copyPSProfileFromCode`) - Restore profile from code repository, keeping your config
-- `getChangesInBranch -gitLoc $path -branchName $branch [-filter "*Jira*"] [-update]` - Compare branch merges
-- `..` / `...` - Go up one / two folders
-- `mkcd $path` - Create a folder and move into it
-- `touch $file` - Create a file or update its timestamp
-
-`goToRepo` tab-completes repository names from your coding folder.
-
-### GitUtils Functions
-- `newFeature $name [-prefix fix]` - Update the default branch and create `feat/<name>`
-- `pr` - Push the current branch and open a pull request (GitHub CLI or browser)
-- `cleanBranches` - Delete local branches already merged into the default branch
-- `gs` - Short git status
-- `glog [$count]` - Compact git log graph
-- `gitUndo` - Undo the last commit, keeping changes staged
-- `getDefaultBranch` - Print the repo's default branch name
-
-### FileUtils Functions
-- `compressAndCopy -fileName $name -loc $source -dest $destination` - Create dated archive
-- `validateFiles -path $directory -fileList @("file1", "file2")` - Verify required files exist
-- `copyByExtension -copyFrom $source -copyTo $dest -extFilter @("*.ps1")` - Copy files by extension
-- `findFile $pattern [-path $folder]` - Find files by name, recursively
-- `dirSize [$path] [-top 10]` - Show the largest sub-folders
-
-### SystemUtils Functions
-- `checkEventLogs -servers @("server1") -days 10` - Check event logs and export to PDF
-- `manageServices -serviceID 1 -machine "server"` - Restart services locally or remotely
-- `sysInfo` - OS, uptime, CPU, memory and disk space
-- `updateAll [-skipModules]` - Upgrade winget packages and PowerShell modules
-- `isAdmin` - `$true` if the session is elevated
-- `sudoLast` - Re-run the previous command in an elevated window
-
-### NetworkUtils Functions
-- `speedTest` - Test network download speed
-- `myIP` - Display private IP, public IP, and gateway
-- `wifiList` - List WiFi networks or connect to network
-- `checkPort $port` - Show what process is using a port
-- `killPort $port` - Stop the process listening on a port (asks first)
-- `netDiag $target` - Complete network diagnostics (ping, DNS, traceroute)
-- `netAdapters` - Show active network adapter information
-- `pingTest $target` - Quick boolean ping test
-
-### Profile Functions
-- `profileHelp [$filter]` - List all profile functions grouped by file
-- `ll` - List files including hidden ones
-
-### Config Functions
-- `installTerminalconfig` - Install and configure oh-my-posh with required modules
-
-## 🛠️ Troubleshooting
-
-### Common Issues
-
-**Profile not loading functions:**
-- Ensure Functions folder is in the same directory as your profile
-- Check execution policy: `Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser`
-- Verify file paths in error messages
-
-**Oh-my-posh not working:**
-- Install: `winget install JanDeDobbeleer.OhMyPosh`
-- Install font: `oh-my-posh font install meslo`
-- Set terminal font to "MesloLGM NF"
-
-**Git functions failing:**
-- Install posh-git: `Install-Module posh-git`
-- Ensure Git is installed and in PATH
-
-**Network functions not working:**
-- Run PowerShell as Administrator for some network commands
-- Check Windows Firewall settings
-- Verify network connectivity
-
-**Suggestions or ListView not showing:**
-- Update PSReadLine: `Install-Module PSReadLine -Force -Scope CurrentUser` (Windows PowerShell 5.1 ships an older version)
-- Press `F2` to switch between inline and list suggestions
-
-**Slow profile loading:**
-- Use `Update-Profile` function to get latest optimisations
-- Remove unused functions from Functions directory
-
-## ⚙️ Customisation Guide
-
-### Personal Configuration
-
-1. **Edit `profile.config.psd1`** (created next to `$PROFILE` by the installer). It's never overwritten by `Update-Profile` or re-running the installer:
-   ```powershell
-   @{
-       CodingPath   = 'D:\Dev'          # where your repos live
-       GitHubUser   = 'your-username'   # used by goToGitHubRepo
-       Theme        = 'jandedobbeleer'  # any oh-my-posh theme name
-       ClearOnStart = $false
-       ShowLoadTime = $true
-   }
-   ```
-
-2. **Add custom aliases in profile:**
-   ```powershell
-   Set-Alias -Name "myalias" -Value "My-Function"
-   ```
-
-3. **Customise oh-my-posh theme:**
-   - Browse themes: `Get-PoshThemes`
-   - Set `Theme` in `profile.config.psd1`
-
-4. **Add personal functions:**
-   - Create new .ps1 files in Functions directory
-   - Functions are automatically loaded on profile startup
-   - Add a `.SYNOPSIS` help block so they show up in `profileHelp` (see [CONTRIBUTING.md](CONTRIBUTING.md))
-
-### Environment Variables
 ```powershell
-# Add to profile for persistent environment variables
-$env:MY_VARIABLE = "value"
+@{
+    CodingPath   = 'D:\Dev'          # where your repos live
+    GitHubUser   = 'your-username'   # used by goToGitHubRepo
+    Theme        = 'jandedobbeleer'  # any oh-my-posh theme (see Get-PoshThemes)
+    ClearOnStart = $false            # clear the screen when the profile loads
+    ShowLoadTime = $true             # show the function count and load time
+}
 ```
 
-## 🚀 Performance Tips
+To add your own functions, drop a `.ps1` file into the `Functions` folder and it'll be loaded automatically. Give each function a `.SYNOPSIS` help block and it'll show up in `profileHelp` too.
 
-### Best Practices
+## What's in it
 
-- **Profile Loading:** Keep functions modular in separate files for faster loading
-- **Error Handling:** Use `-ErrorAction SilentlyContinue` for non-critical operations
-- **Aliases:** Create short aliases for frequently used commands
-- **Module Loading:** Only import modules you actually use
-- **Function Scope:** Use local variables in functions to avoid conflicts
+If you forget what's available, run `profileHelp` (or `profileHelp git` to filter it). `Get-Help <function> -Examples` shows how to use each one.
 
-## 🤝 Contributing
+### Getting around (TimeSavers.ps1)
 
-Ideas and PRs welcome - see [CONTRIBUTING.md](CONTRIBUTING.md), or open a **Function request** issue.
+- `goToCoding` - jump to your coding folder and open it in VS Code
+- `goToRepo <repo>` - jump to a repo and show `git status` (repo names tab-complete)
+- `goToGitHubRepo [user] <repo>` - open a repo on GitHub, using `GitHubUser` if you leave the user out
+- `initRepo <url>` - clone a repo into your coding folder
+- `psProfile` - open the profile folder in VS Code
+- `copyPSProfileToCode` - copy your live profile back into this repo
+- `Update-Profile` - copy the profile from this repo into your live profile (`copyPSProfileFromCode` still works too)
+- `getChangesInBranch -gitLoc <path> -branchName <branch>` - list the merges on your branch since another branch. Add `-filter "*Jira*"` to narrow it down and `-update` to pull first
+- `..` and `...` - go up one or two folders
+- `mkcd <path>` - make a folder and move into it
+- `touch <file>` - create a file, or update its timestamp
 
-## 📄 Licence
+### Git (GitUtils.ps1)
+
+These follow the way I work on this repo: a `feat/` branch, a PR, then merge.
+
+- `newFeature <name>` - pull the default branch and create `feat/<name>` (use `-prefix fix` for a fix branch)
+- `pr` - push the branch and open a pull request
+- `cleanBranches` - delete local branches that have already been merged
+- `gs` - short status
+- `glog [count]` - one-line log graph
+- `gitUndo` - undo the last commit but keep the changes staged
+- `getDefaultBranch` - print the repo's default branch name
+
+### Files (FileUtils.ps1)
+
+- `compressAndCopy -fileName <name> -loc <source> -dest <folder>` - zip a folder up with today's date in the name
+- `validateFiles -path <folder> -fileList @("a.txt", "b.txt")` - check a set of files exists, which is handy after a deployment
+- `copyByExtension -copyTo <folder> -extFilter @("*.ps1")` - copy files of certain types out of a folder tree
+- `findFile <pattern>` - find files by name
+- `dirSize [path]` - see which folders are taking up the space
+
+### System (SystemUtils.ps1)
+
+- `checkEventLogs -servers @("server1") -days 10` - pull errors out of the event logs and print them to PDF
+- `manageServices -serviceID 1 -machine <server>` - restart services locally or on another machine
+- `sysInfo` - OS, uptime, CPU, memory and disk space
+- `updateAll` - run `winget upgrade --all` and update your PowerShell modules
+- `isAdmin` - check whether you're running elevated
+- `sudoLast` - re-run your last command as Administrator
+
+### Network (NetworkUtils.ps1)
+
+- `myIP` - private IP, public IP and gateway
+- `speedTest` - rough download speed test
+- `checkPort <port>` / `killPort <port>` - see what's using a port, or stop it
+- `netDiag <host>` - ping, DNS lookup and traceroute in one go
+- `netAdapters` - adapters that are up and their link speed
+- `pingTest <host>` - returns true or false
+- `wifiList [-connectTo <name>]` - list saved WiFi networks or connect to one
+
+### Everything else
+
+- `ll` - list files, including hidden ones
+- `installTerminalconfig` - install posh-git, oh-my-posh and the Meslo font
+- `PSReadLine.ps1` sets up suggestions from your history, Up/Down history search on what you've typed so far, and a Tab completion menu
+
+## If something isn't working
+
+**Functions don't load.** Make sure the `Functions` folder is next to your profile, and that your execution policy allows local scripts:
+`Set-ExecutionPolicy RemoteSigned -Scope CurrentUser`
+
+**The prompt looks broken or has missing icons.** Install oh-my-posh (`winget install JanDeDobbeleer.OhMyPosh`) and the font (`oh-my-posh font install meslo`). Then set Windows Terminal's font to "MesloLGM Nerd Font".
+
+**No history suggestions.** Windows PowerShell 5.1 ships an old version of PSReadLine, so update it with `Install-Module PSReadLine -Force -Scope CurrentUser`. `F2` switches between inline and list view.
+
+**Some network or service functions fail.** A few of them need an Administrator window.
+
+## Contributing
+
+Ideas and PRs are welcome. Have a look at [CONTRIBUTING.md](CONTRIBUTING.md), or open a function request issue.
+
+## Licence
 
 [MIT](LICENSE)
