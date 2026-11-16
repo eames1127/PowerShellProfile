@@ -197,3 +197,38 @@ function pingTest {
     
     Test-Connection -ComputerName $target -Count 1 -Quiet
 }
+<#
+.SYNOPSIS
+Stop the process that is listening on a local TCP port (asks first).
+
+.PARAMETER port
+Local TCP port number.
+
+.EXAMPLE
+killPort 3000
+#>
+function killPort {
+    param(
+        [Parameter(Mandatory=$true, Position=0)]
+        [int]$port
+    )
+
+    $pids = Get-NetTCPConnection -LocalPort $port -State Listen -ErrorAction SilentlyContinue |
+        Select-Object -ExpandProperty OwningProcess -Unique
+    if (-not $pids) {
+        Write-Host "Nothing is listening on port $port" -ForegroundColor Green
+        return
+    }
+
+    foreach ($processId in $pids) {
+        $process = Get-Process -Id $processId -ErrorAction SilentlyContinue
+        $label = if ($process) { "$($process.ProcessName) (PID: $processId)" } else { "PID $processId" }
+        $continue = Read-Host "Stop $label on port $($port)? (y/n)"
+        if ($continue.ToLower() -eq 'y') {
+            Stop-Process -Id $processId -Force
+            Write-Host "Stopped $label" -ForegroundColor Green
+        } else {
+            Write-Host "Skipped $label" -ForegroundColor Yellow
+        }
+    }
+}

@@ -31,6 +31,25 @@ Describe 'Main profile' {
     }
 }
 
+Describe 'updateAll' {
+    BeforeAll {
+        . (Join-Path $PSScriptRoot '..\Functions\SystemUtils.ps1')
+        # Skip winget so the test never upgrades real packages
+        Mock Get-Command { $null } -ParameterFilter { $Name -eq 'winget' }
+        Mock Write-Warning { }
+        Mock Write-Host { }
+        Mock Get-InstalledModule { [pscustomobject]@{ Name = 'GoodModule' }, [pscustomobject]@{ Name = 'BrokenModule' } }
+        Mock Update-Module { throw 'simulated failure' } -ParameterFilter { $Name -eq 'BrokenModule' }
+        Mock Update-Module { }
+    }
+
+    It 'names the module that failed to update' {
+        updateAll
+        Should -Invoke Write-Host -ParameterFilter { $Object -eq '  BrokenModule failed: simulated failure' } -Exactly 1
+        Should -Invoke Write-Host -ParameterFilter { $Object -eq '  GoodModule checked' } -Exactly 1
+    }
+}
+
 Describe 'Function help' {
     BeforeDiscovery {
         $script:helpCases = foreach ($file in Get-ChildItem -Path (Join-Path $PSScriptRoot '..\Functions') -Filter '*.ps1' -Recurse) {
